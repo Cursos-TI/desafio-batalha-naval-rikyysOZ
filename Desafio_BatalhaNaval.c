@@ -4,6 +4,7 @@
 
 #define LINHAS 10
 #define COLUNAS 10
+#define TAMANHO_NAVIO 3
 
 void MostrarTabuleiro(char *TABULEIRO[LINHAS][COLUNAS]) {   
     // Cabeçalho das colunas
@@ -40,13 +41,16 @@ int main() {
         {" 8","0","0","0","0","0","0","0","0","0"},  // Linha 8
         {" 9","0","0","0","0","0","0","0","0","0"}   // Linha 9
     };
+    // Vetores para representar os navios
+    char navioHorizontal[TAMANHO_NAVIO] = {'3', '3', '3'};
+    char navioVertical[TAMANHO_NAVIO] = {'3', '3', '3'};
 
     // Mostra tabuleiro inicial
     printf("Tabuleiro Inicial:\n");
     MostrarTabuleiro(TABULEIRO);
     
-    // Posicionando o primeiro navio (horizontal)
-    printf("\nPosicionando o PRIMEIRO navio (HORIZONTAL - tamanho 3):\n");
+    // Posicionando o navio horizontal
+    printf("\nPosicionando o navio HORIZONTAL (tamanho %d):\n", TAMANHO_NAVIO);
     
     printf("Digite a linha (1 a 9): ");
     scanf("%d", &linha);
@@ -57,21 +61,30 @@ int main() {
     coluna = coluna_char - 'B' + 1; // Converte para índice (1-8)
 
     // Verificação de posição válida
-    if(coluna + 2 >= COLUNAS) {
+    if(coluna + TAMANHO_NAVIO - 1 >= COLUNAS) {
         printf("Erro: Navio não cabe nessa posição!\n");
         return 1;
     }
 
-    // Posiciona navio horizontal
-    for(int i = 0; i < 3; i++) {
-        TABULEIRO[linha][coluna+i] = "3";
+    // Verificação de sobreposição
+    for(int i = 0; i < TAMANHO_NAVIO; i++) {
+        if(strcmp(TABULEIRO[linha][coluna+i], "0") != 0) {
+            printf("Erro: Posição (%d,%c) já ocupada!\n", 
+                   linha, 'B' + coluna + i - 1);
+            return 1;
+        }
     }
 
-    printf("\nTabuleiro com primeiro navio (horizontal):\n");
+    // Posiciona navio horizontal (usando o vetor)
+    for(int i = 0; i < TAMANHO_NAVIO; i++) {
+        TABULEIRO[linha][coluna+i] = &navioHorizontal[i];
+    }
+
+    printf("\nTabuleiro com navio horizontal:\n");
     MostrarTabuleiro(TABULEIRO);
 
-    // Posicionando o segundo navio (vertical)
-    printf("\nPosicionando o SEGUNDO navio (VERTICAL - tamanho 3):\n");
+    // Posicionando o navio vertical
+    printf("\nPosicionando o navio VERTICAL (tamanho %d):\n", TAMANHO_NAVIO);
     
     printf("Digite a linha (1 a 8): ");
     scanf("%d", &linha);
@@ -82,26 +95,26 @@ int main() {
     coluna = coluna_char - 'B' + 1;
 
     // Verificação de posição válida
-    if(linha + 2 >= LINHAS) {
+    if(linha + TAMANHO_NAVIO - 1 >= LINHAS) {
         printf("Erro: Navio não cabe nessa posição!\n");
         return 1;
     }
 
     // Verificação de sobreposição
-    for(int i = 0; i < 3; i++) {
-        if(strcmp(TABULEIRO[linha+i][coluna], "3") == 0) {
-            printf("Erro: Navio sobrepondo outro navio em (%d,%c)!\n", 
-                   linha+i, coluna_char+i);
+    for(int i = 0; i < TAMANHO_NAVIO; i++) {
+        if(strcmp(TABULEIRO[linha+i][coluna], "0") != 0) {
+            printf("Erro: Posição (%d,%c) já ocupada!\n", 
+                   linha+i, coluna_char);
             return 1;
         }
     }
 
-    // Posiciona segundo navio vertical
-    for(int i = 0; i < 3; i++) {
-        TABULEIRO[linha+i][coluna] = "3"; 
+    // Posiciona navio vertical (usando o vetor)
+    for(int i = 0; i < TAMANHO_NAVIO; i++) {
+        TABULEIRO[linha+i][coluna] = &navioVertical[i];
     }
     
-    printf("\nTabuleiro com segundo navio (vertical):\n");
+    printf("\nTabuleiro com navio vertical:\n");
     MostrarTabuleiro(TABULEIRO);
 
     // Posicionando o terceiro navio (diagonal)
